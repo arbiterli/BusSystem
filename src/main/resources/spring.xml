@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"       
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/tx 
+          http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
+       default-lazy-init="true">
+
+    <context:component-scan base-package="com.glority.quality"/>
+
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/bussystem?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false"/>
+        <property name="user" value="arbiterli"/>
+        <property name="password" value="314159"/>
+        <property name="minPoolSize" value="5"/>
+        <property name="maxPoolSize" value="30"/>
+        <property name="initialPoolSize" value="10"/>
+        <property name="idleConnectionTestPeriod" value="300"/>
+        <property name="breakAfterAcquireFailure" value="false"/>
+        <property name="testConnectionOnCheckout"  value="false"/>
+        <property name="automaticTestTable" value="c3p0"/>
+        <property name="maxStatements" value="0"/>
+        <property name="maxStatementsPerConnection" value="100"/>
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
+        <property name="hibernateProperties">
+            <value>
+                hibernate.dialect=${hibernate.dialect}
+                hibernate.query.substitutions=true 'Y', false 'N'
+                hibernate.cache.use_second_level_cache=true
+                hibernate.cache.provider_class=org.hibernate.cache.EhCacheProvider
+            </value>
+            <!-- Turn batching off for better error messages under PostgreSQL -->
+            <!-- hibernate.jdbc.batch_size=0 -->
+        </property>
+    </bean>
+
+</beans>
